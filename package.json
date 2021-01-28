@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch",
-    "start": "nodemon server",
+    "test": "cross-env NODE_ENV=test jest --watch",
+    "start": "cross-env NODE_ENV=development nodemon server",
     "lint": "eslint .",
     "lint:fix": "eslint . -- --fix"
   },
@@ -14,11 +14,14 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "config": "^3.3.3",
     "express": "^4.17.1",
+    "express-validator": "^6.9.2",
     "sequelize": "^6.3.5",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint": "^7.16.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
