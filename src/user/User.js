@@ -12,6 +12,7 @@ User.init(
     },
     email: {
       type: Sequelize.STRING,
+      unique: true,
     },
     password: {
       type: Sequelize.STRING,
@@ -20,7 +21,7 @@ User.init(
   {
     sequelize,
     modelName: "user",
-  }
+  },
 );
 
 module.exports = User;

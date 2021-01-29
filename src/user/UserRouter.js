@@ -13,7 +13,19 @@ router.post(
     .bail()
     .isLength({ min: 4, max: 32 })
     .withMessage("username must be atleast 4 and atmost 32 characters long"),
-  check("email").notEmpty().withMessage("email can not be null").bail().isEmail().withMessage("email is not valid"),
+  check("email")
+    .notEmpty()
+    .withMessage("email can not be null")
+    .bail()
+    .isEmail()
+    .withMessage("email is not valid")
+    .bail()
+    .custom(async (email) => {
+      const user = await UserService.getOne({ email });
+      if (user) {
+        throw new Error("email already in use");
+      }
+    }),
   check("password")
     .notEmpty()
     .withMessage("password can not be null")

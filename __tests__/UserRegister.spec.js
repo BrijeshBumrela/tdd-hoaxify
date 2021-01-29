@@ -100,4 +100,17 @@ describe("User registration", () => {
     const res = await postUser(user);
     expect(res.body.validationErrors[field]).toBe(expectedMsg);
   });
+
+  it("validates duplicate email", async () => {
+    await postUser({ ...validUser });
+    const response = await postUser({ ...validUser });
+    expect(response.body.validationErrors.email).toBe("email already in use");
+  });
+
+  it("returns error for both username is null and email is in use", async () => {
+    await postUser({ ...validUser });
+    const response = await postUser({ ...validUser, username: null });
+    expect(response.body.validationErrors.email).toBe("email already in use");
+    expect(response.body.validationErrors.username).toBe("username can not be null");
+  });
 });
