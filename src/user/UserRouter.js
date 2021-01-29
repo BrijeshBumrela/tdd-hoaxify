@@ -7,9 +7,22 @@ const router = express.Router();
 
 router.post(
   "/",
-  check("username").notEmpty(),
-  check("email").isEmail().notEmpty(),
-  check("password").notEmpty(),
+  check("username")
+    .notEmpty()
+    .withMessage("username can not be null")
+    .bail()
+    .isLength({ min: 4, max: 32 })
+    .withMessage("username must be atleast 4 and atmost 32 characters long"),
+  check("email").notEmpty().withMessage("email can not be null").bail().isEmail().withMessage("email is not valid"),
+  check("password")
+    .notEmpty()
+    .withMessage("password can not be null")
+    .bail()
+    .isLength({ min: 6 })
+    .withMessage("password must be atleast 6 characters long")
+    .bail()
+    .matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*/)
+    .withMessage("password must have atleast 1 lowercase, 1 uppercase and 1 number"),
   async (req, res) => {
     const { username, email, password } = req.body;
 

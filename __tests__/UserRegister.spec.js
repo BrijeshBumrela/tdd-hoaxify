@@ -78,17 +78,26 @@ describe("User registration", () => {
     done();
   });
 
-  it.each([
-    ["username", "Username can not be null"],
-    ["email", "email can not be null"],
-    ["password", "password can not be null"],
-  ])("when %s is null %s", async (field, expectedMsg) => {
+  it.each`
+    field         | value              | expectedMsg
+    ${"username"} | ${null}            | ${"username can not be null"}
+    ${"email"}    | ${null}            | ${"email can not be null"}
+    ${"email"}    | ${"mail.com"}      | ${"email is not valid"}
+    ${"email"}    | ${"user.mail.com"} | ${"email is not valid"}
+    ${"email"}    | ${"mail@com"}      | ${"email is not valid"}
+    ${"username"} | ${"usr"}           | ${"username must be atleast 4 and atmost 32 characters long"}
+    ${"username"} | ${"a".repeat(33)}  | ${"username must be atleast 4 and atmost 32 characters long"}
+    ${"password"} | ${null}            | ${"password can not be null"}
+    ${"password"} | ${"Passw"}         | ${"password must be atleast 6 characters long"}
+    ${"password"} | ${"alllowercase"}  | ${"password must have atleast 1 lowercase, 1 uppercase and 1 number"}
+    ${"password"} | ${"8888999998"}    | ${"password must have atleast 1 lowercase, 1 uppercase and 1 number"}
+  `("returns $expectedMsg when $field is $value", async ({ field, expectedMsg, value }) => {
     const user = {
       ...validUser,
     };
 
-    user[field] = null;
+    user[field] = value;
     const res = await postUser(user);
-    expect(res.body.validationErrors[field]).not.toBeUndefined();
+    expect(res.body.validationErrors[field]).toBe(expectedMsg);
   });
 });
